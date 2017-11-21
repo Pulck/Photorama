@@ -21,6 +21,9 @@ class PhotosViewController: UIViewController {
             switch photosResult {
             case .success(let photos):
                 print("Successful found \(photos.count)")
+                if let firstPhoto = photos.first {
+                    self.updateImageView(for: firstPhoto)
+                }
             case .failure(let error):
                 print("Error fetching interesting photos: \(error)")
             }
@@ -32,6 +35,16 @@ class PhotosViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    func updateImageView(for photo: Photo) {
+        photoStore.fetchImage(for: photo) {
+            imageResult in
+            switch imageResult {
+            case .success(let image):
+                self.imageView.image = image
+            case .failure(let error):
+                print("Error downloading image: \(error)")
+            }
+        }
+    }
 }
 
