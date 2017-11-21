@@ -58,7 +58,7 @@
 		84E59C4D1FC3013A00A3BCCF /* Photorama */ = {
 			isa = PBXGroup;
 			children = (
-				84E59C601FC3015F00A3BCCF /* Support Files */,
+				84FB9A481FC3FC6E00E34DB0 /* Support FIles */,
 				84E59C501FC3013A00A3BCCF /* PhotosViewController.swift */,
 				84E59C521FC3013A00A3BCCF /* Main.storyboard */,
 				84E59C611FC3142400A3BCCF /* FlickrAPI.swift */,
@@ -67,7 +67,7 @@
 			path = Photorama;
 			sourceTree = "<group>";
 		};
-		84E59C601FC3015F00A3BCCF /* Support Files */ = {
+		84FB9A481FC3FC6E00E34DB0 /* Support FIles */ = {
 			isa = PBXGroup;
 			children = (
 				84E59C4E1FC3013A00A3BCCF /* AppDelegate.swift */,
@@ -75,7 +75,7 @@
 				84E59C571FC3013A00A3BCCF /* LaunchScreen.storyboard */,
 				84E59C5A1FC3013A00A3BCCF /* Info.plist */,
 			);
-			path = "Support Files";
+			name = "Support FIles";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
