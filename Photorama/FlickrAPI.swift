@@ -69,6 +69,15 @@ struct FlickrAPI {
                     return .failure(FlickrError.invaildJSONData)
             }
             var finalPhotos = [Photo]()
+            for photoJSON in photosArray {
+                if let photo = photo(from: photoJSON) {
+                    finalPhotos.append(photo)
+                }
+            }
+            
+            if finalPhotos.isEmpty && !photosArray.isEmpty {
+                return .failure(FlickrError.invaildJSONData)
+            }
             return .success(finalPhotos)
         } catch {
             return .failure(error)
