@@ -16,7 +16,15 @@ class PhotosViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        photoStore.fetchInterestingPhotos()
+        photoStore.fetchInterestingPhotos {
+            photosResult in
+            switch photosResult {
+            case .success(let photos):
+                print("Successful found \(photos.count)")
+            case .failure(let error):
+                print("Error fetching interesting photos: \(error)")
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
