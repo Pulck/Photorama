@@ -20,6 +20,12 @@ class PhotoStore {
         let request = URLRequest(url: url)
         let task = session.dataTask(with: request) {
             (data, response, error) in
+            if let httpURLResponse = response as? HTTPURLResponse {
+                print("status code: \(httpURLResponse.statusCode)")
+                for (key, value) in httpURLResponse.allHeaderFields {
+                    print("key: \(key) value: \(value)")
+                }
+            }
             let result = self.processPhotosRequest(data: data, error: error)
             OperationQueue.main.addOperation {
                 completion(result)
