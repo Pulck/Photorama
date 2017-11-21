@@ -16,8 +16,13 @@ struct FlickrAPI {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter
         }()
-    static var interestingPhotosURL: URL {
-        return flickrURL(method: .interestingPhotos,
+//    static var interestingPhotosURL: URL {
+//        return flickrURL(method: .interestingPhotos,
+//                         parameters: ["extras" : "url_h,date_taken"])
+//    }
+    
+    static func generateURLUse(method: Method) -> URL {
+        return flickrURL(method: method,
                          parameters: ["extras" : "url_h,date_taken"])
     }
     
@@ -87,6 +92,7 @@ struct FlickrAPI {
 
 enum Method: String {
     case interestingPhotos = "flickr.interestingness.getList"
+    case recentPhotos = "flickr.interestingness.getRecent"
 }
 
 enum FlickrError: Error {
