@@ -70,7 +70,7 @@ class PhotoStore {
                     return .failure(PhotoError.imageCreationError)
                 }
         }
-         return .success(image)
+        return .success(image)
     }
 }
 

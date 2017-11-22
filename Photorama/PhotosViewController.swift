@@ -11,9 +11,9 @@ import UIKit
 class PhotosViewController: UIViewController {
     
     var photoStore: PhotoStore!
-    
-    @IBOutlet weak var collectionView: UICollectionView!
     let photoDataSource = PhotoDataSource()
+
+    @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +35,6 @@ class PhotosViewController: UIViewController {
         }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
         case "showPhoto"?:
@@ -50,7 +45,7 @@ class PhotosViewController: UIViewController {
                 destinationVC.store = photoStore
             }
         default:
-            <#code#>
+            preconditionFailure("Unexpected segue identifier")
         }
     }
 }

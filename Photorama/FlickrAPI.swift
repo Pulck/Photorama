@@ -64,7 +64,7 @@ struct FlickrAPI {
         do {
             let jsonData = try JSONSerialization.jsonObject(with: data, options: [])
             guard let jsonDictionary = jsonData as? [String : Any],
-            let photos = jsonDictionary["photos"] as? [String : Any],
+                let photos = jsonDictionary["photos"] as? [String : Any],
                 let photosArray = photos["photo"] as? [[String : Any]] else {
                     return .failure(FlickrError.invaildJSONData)
             }
