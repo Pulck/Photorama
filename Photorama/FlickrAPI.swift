@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct FlickrAPI {
     private static let baseURLString = "https://api.flickr.com/services/rest"
@@ -21,7 +22,7 @@ struct FlickrAPI {
                          parameters: ["extras" : "url_h,date_taken"])
     }
     
-    private static func photo(from json: [String : Any]) -> Photo? {
+    private static func photo(from json: [String : Any], into context: NSManagedObjectContext) -> Photo? {
         guard let photoID = json["id"] as? String,
             let title = json["title"] as? String,
             let dateString = json["datetaken"] as? String,
@@ -30,8 +31,15 @@ struct FlickrAPI {
             let dateTaken = dateFormatter.date(from: dateString) else{
                 return nil
         }
-        return Photo(title: title, photoID: photoID,
-                     remoteURL: url, dateTaken: dateTaken)
+        var photo: Photo!
+        context.performAndWait {
+            photo = Photo(context: context)
+            photo.title = title
+            photo.photoID = photoID
+            photo.remoteURL = url as NSURL
+            photo.dataTaken = dateTaken as NSDate
+        }
+        return photo
     }
     
     private static func flickrURL(method: Method,
@@ -60,7 +68,7 @@ struct FlickrAPI {
         return components.url!
     }
     
-    static func photos(fromJSON data: Data) -> PhotosResult {
+    static func photos(fromJSON data: Data, into context: NSManagedObjectContext) -> PhotosResult {
         do {
             let jsonData = try JSONSerialization.jsonObject(with: data, options: [])
             guard let jsonDictionary = jsonData as? [String : Any],
@@ -70,7 +78,7 @@ struct FlickrAPI {
             }
             var finalPhotos = [Photo]()
             for photoJSON in photosArray {
-                if let photo = photo(from: photoJSON) {
+                if let photo = photo(from: photoJSON, into: context) {
                     finalPhotos.append(photo)
                 }
             }

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 class PhotoStore {
     private let session: URLSession = {
@@ -16,13 +17,31 @@ class PhotoStore {
     }()
     
     var imageStore = ImageStore()
+    let persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "Photorama")
+        container.loadPersistentStores(completionHandler: {
+            (description, error) in
+            if let error = error {
+                print("Error setting up Core Data (\(error))")
+            }
+        })
+        return container
+    }()
     
     func fetchInterestingPhotos(completion: @escaping (PhotosResult) -> Void) {
         let url = FlickrAPI.interestingPhotosURL
         let request = URLRequest(url: url)
         let task = session.dataTask(with: request) {
             (data, response, error) in
-            let result = self.processPhotosRequest(data: data, error: error)
+            var result = self.processPhotosRequest(data: data, error: error)
+            
+            if case .success = result {
+                do {
+                    try self.persistentContainer.viewContext.save()
+                } catch {
+                    result = .failure(error)
+                }
+            }
             OperationQueue.main.addOperation {
                 completion(result)
             }
@@ -34,11 +53,13 @@ class PhotoStore {
         guard let jsonData = data else {
             return .failure(error!)
         }
-        return FlickrAPI.photos(fromJSON: jsonData)
+        return FlickrAPI.photos(fromJSON: jsonData, into: persistentContainer.viewContext)
     }
     
     func fetchImage(for photo: Photo, completion: @escaping (Imageresult) -> Void) {
-        let photoKey = photo.photoID
+        guard let photoKey = photo.photoID else {
+            preconditionFailure("Photo expect to have a photoID")
+        }
         if let image = imageStore.image(forKey: photoKey) {
             OperationQueue.main.addOperation {
                 completion(.success(image))
@@ -46,8 +67,10 @@ class PhotoStore {
             return
         }
         
-        let photoURL = photo.remoteURL
-        let request = URLRequest(url: photoURL)
+        guard let photoURL = photo.remoteURL else {
+            preconditionFailure("Photo expect to have a remoteURL")
+        }
+        let request = URLRequest(url: photoURL as URL)
         let task = session.dataTask(with: request) {
             (data, response, error) in
             let result = self.proceessImageRequest(data: data, error: error)
